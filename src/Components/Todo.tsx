@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import mTodo from '../Models/mTodo';
 
+type TodoProps = {
+    todo: mTodo;
+    editBtnHandler: (id: string) => void;
+    updateTodoHandler: (todo: mTodo) => void;
+    abortEditTodoHandler: () => void;
+    deleteBtnHandler: (id: string) => void;
+};
 
-const Todo: React.FC<{
-    todo: mTodo,
-    editBtnHandler: Function,
-    updateTodoHandler: Function,
-    abortEditTodoHandler: Function,
-    deleteBtnHandler: Function
-}> =
+const Todo: React.FC<TodoProps> =
     (
         {
             todo,
@@ -25,54 +26,51 @@ const Todo: React.FC<{
 
         const [showInvalid, setShowInvalid] = useState(false);
 
-        const textLineThrough: any = { "text-decoration-line": "line-through" };
+        const textLineThrough: React.CSSProperties = { textDecorationLine: "line-through" };
 
-        const disabled: any = { "pointer-events": "none", "opacity": "0.4", "color": "red" };
+        const disabled: React.CSSProperties = { pointerEvents: "none", opacity: 0.4, color: "red" };
 
-        const ShowBtn = (e: any) => {
+        useEffect(() => {
+            setTodoText(todo.todo);
+        }, [todo.todo]);
+
+        const ShowBtn = () => {
             if (todo.isFailed) return;
 
             setShowBtn(true)
         }
-        const HideBtn = (e: any) => {
+        const HideBtn = () => {
             if (todo.isFailed) return;
 
             setShowBtn(false);
         }
 
-        function btnDeleteOnClick(e: any) {
+        function btnDeleteOnClick() {
             deleteBtnHandler(todo.getId);
         }
-        function btnEditOnClick(e: any) {
+        function btnEditOnClick() {
             setTodoText(todo.todo);
             editBtnHandler(todo.getId);
         }
-        function abortEditOnKeyUp(e: any) {
+        function handleEditKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
             if (e.key === 'Escape') {
                 abortEditTodoHandler();
                 setTodoText(todo.todo);
             }
-
-        }
-        function updateTodo(e: any) {
             if (e.key === 'Enter') {
+                e.preventDefault();
                 if (todoText.trim() === "") {
                     setShowInvalid(true);
                     return;
                 }
                 setShowInvalid(false);
-                todo.todo = todoText
+                todo.todo = todoText.trim();
 
                 updateTodoHandler(todo);
 
             }
-            else {
-                setTodoText(e.target.value);
-            }
-
-
         }
-        function onCheck(e: any) {
+        function onCheck(e: React.ChangeEvent<HTMLInputElement>) {
             todo.isDone = e.target.checked;
             updateTodoHandler(todo);
         }
@@ -117,10 +115,13 @@ const Todo: React.FC<{
                                         as="textarea"
                                         required
                                         className="form-control-md"
+                                        aria-label="Edit todo"
                                         value={todoText}
-                                        onKeyUp={abortEditOnKeyUp}
-                                        onKeyPress={updateTodo}
-                                        onChange={(e) => { setTodoText(e.target.value) }}
+                                        onKeyDown={handleEditKeyDown}
+                                        onChange={(e) => {
+                                            if (showInvalid) setShowInvalid(false);
+                                            setTodoText(e.target.value)
+                                        }}
                                     ></Form.Control>
                                     <Form.Control.Feedback type="invalid" style={showInvalid ? { display: "block" } : { display: "none" }}>
                                         This field cannot be blank.
