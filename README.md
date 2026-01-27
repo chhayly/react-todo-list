@@ -27,12 +27,16 @@ Your app is ready to be deployed!
 
 ### Vercel Deployment
 
-This project uses Node.js 16.x which is compatible with `react-scripts@4.0.3`. If you encounter OpenSSL-related build errors on Vercel or other platforms using newer Node versions, you can set the following environment variable:
+This project currently uses Node.js 16.x for compatibility with `react-scripts@4.0.3`. 
+
+**⚠️ Note**: Node.js 16.x reached End of Life in September 2023. This is a temporary workaround to ensure builds work reliably. For long-term maintainability, consider upgrading to `react-scripts@5.x` which supports Node.js 18.x and 20.x (current LTS versions).
+
+If you encounter OpenSSL-related build errors on Vercel or other platforms using newer Node versions, you can set the following environment variable:
 
 ```
 NODE_OPTIONS=--openssl-legacy-provider
 ```
 
-**Note**: The recommended approach is to use Node.js 16.x as specified in `.nvmrc` and `package.json` engines field. Vercel will automatically detect and use the correct Node version from these configuration files.
+**Note**: Vercel will automatically detect and use the correct Node version from `.nvmrc` and `package.json` engines field.
 
 
