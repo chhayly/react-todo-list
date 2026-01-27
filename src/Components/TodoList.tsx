@@ -38,7 +38,7 @@ const TodoList: React.FC<
                 ))}
 
             <tr
-                className="text-center"
+                className="text-center todo-empty"
                 style={filteredTodos.length === 0 ? { display: "" } : { display: "none" }}>
                 <td>No result. Create a new one instead!</td>
             </tr>

@@ -43,7 +43,7 @@ const TodoInput: React.FC<TodoInputProps> = ({
 
     return (
         <>
-            <tr>
+            <tr className="todo-input-row">
                 <td>
                     <div className="row">
                         <div className="col-12 h-auto">
@@ -51,7 +51,7 @@ const TodoInput: React.FC<TodoInputProps> = ({
                                 required
                                 as="textarea"
                                 rows={2}
-                                className="form-control-md h-75"
+                                className="form-control-md h-75 todo-input"
                                 aria-label="Enter a new todo"
                                 value={filterKeyword}
                                 onKeyDown={handleKeyDown}
@@ -60,10 +60,10 @@ const TodoInput: React.FC<TodoInputProps> = ({
                                     if (showInvalid) setShowInvalid(false);
                                     filterInputOnChange(e.target.value);
                                 }}
-                                placeholder="Enter todo here..."
+                                placeholder="Add a task and press Enter..."
                             ></Form.Control></div>
                         <Form.Control.Feedback
-                            className="ml-3"
+                            className="ml-3 todo-invalid-feedback"
                             type="invalid"
                             style={showInvalid ? { display: "block" } : { display: "none" }}>
                             This field cannot be blank.

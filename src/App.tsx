@@ -135,9 +135,9 @@ function App() {
 
   return (
     <>
-      <div className="container mx-auto px-auto" style={{ minWidth: "380px", maxWidth: "60%" }}>
+      <div className="container app-shell">
         <Header></Header>
-        <Table striped bordered hover variant="light" className="mt-4">
+        <Table bordered hover responsive variant="light" className="todo-table mt-4">
           <tbody>
 
             <TodoInput

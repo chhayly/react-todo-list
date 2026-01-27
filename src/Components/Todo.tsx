@@ -45,6 +45,20 @@ const Todo: React.FC<TodoProps> =
             setShowBtn(false);
         }
 
+        const handleFocus = () => {
+            if (todo.isFailed) return;
+            setShowBtn(true);
+        }
+
+        const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+            if (todo.isFailed) return;
+            // Only hide if focus is moving outside the todo item container
+            const relatedTarget = e.relatedTarget;
+            if (!relatedTarget || !(relatedTarget instanceof Node) || !e.currentTarget.contains(relatedTarget)) {
+                setShowBtn(false);
+            }
+        }
+
         function btnDeleteOnClick() {
             deleteBtnHandler(todo.getId);
         }
@@ -77,44 +91,52 @@ const Todo: React.FC<TodoProps> =
 
         return (
             <>
-                <tr>
+                <tr className="todo-row">
                     <td>
                         <div
                             style={!todo.isEdit ? { display: "" } : { display: "none" }}
                             onMouseEnter={ShowBtn}
-                            onMouseLeave={HideBtn}>
+                            onMouseLeave={HideBtn}
+                            onFocus={handleFocus}
+                            onBlur={handleBlur}>
                             <div
-                                className="row px-3 text-break"
+                                className="row px-3 text-break todo-item"
                                 style={todo.isFailed ? disabled : {}}>
                                     <div className="col-1 my-2">
-                                    <Form.Check type="checkbox" checked={todo.isDone} onChange={onCheck} className="float-left" />
+                                    <Form.Check 
+                                        type="checkbox" 
+                                        checked={todo.isDone} 
+                                        onChange={onCheck} 
+                                        className="float-left todo-check"
+                                        aria-label={`Mark "${todo.todo}" as ${todo.isDone ? 'incomplete' : 'complete'}`}
+                                    />
                                     </div>
-                                
 
-                                <div className="mr-auto col my-2" style={todo.isDone ? textLineThrough : {}}>{todo.todo}</div>
+
+                                <div className="mr-auto col my-2 todo-text" style={todo.isDone ? textLineThrough : {}}>{todo.todo}</div>
                                 <Form.Control.Feedback type="invalid" style={todo.isFailed ? { display: "block" } : { display: "none" }}>
                                     Failed to enter todo
                                 </Form.Control.Feedback>
 
-                                <div className="d-line ml-auto my-2" style={showBtn ? { display: "" } : { display: "none" }}>
+                                <div className="d-line ml-auto my-2 todo-actions" style={showBtn ? { display: "" } : { display: "none" }}>
 
-                                    <Button variant="btn btn-secondary btn-sm" onClick={btnEditOnClick}>edit</Button>
-                                    <Button variant="btn btn-danger btn-sm ml-1" onClick={(btnDeleteOnClick)}>remove</Button>
+                                    <Button variant="outline-secondary" size="sm" className="todo-action" onClick={btnEditOnClick}>Edit</Button>
+                                    <Button variant="outline-danger" size="sm" className="todo-action ml-2" onClick={(btnDeleteOnClick)}>Remove</Button>
                                 </div>
 
                             </div>
 
                         </div>
-                        <Button variant="btn btn-warning btn-sm float-right" style={todo.isFailed ? { display: "" } : { display: "none" }}>retry</Button>
+                        <Button variant="warning" size="sm" className="float-right" style={todo.isFailed ? { display: "" } : { display: "none" }}>Retry</Button>
 
 
                         <div style={todo.isEdit ? { display: "" } : { display: "none" }}>
-                            <div className="row">
+                            <div className="row todo-edit">
                                 <div className="col-12">
                                     <Form.Control
                                         as="textarea"
                                         required
-                                        className="form-control-md"
+                                        className="form-control-md todo-input"
                                         aria-label="Edit todo"
                                         value={todoText}
                                         onKeyDown={handleEditKeyDown}
