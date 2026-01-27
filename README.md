@@ -35,8 +35,12 @@ The build script in `package.json` now includes this flag automatically, so Verc
 
 For local development with Node.js 24.x:
 
-- **macOS/Linux**: `npm run build` works as-is
-- **Windows**: Use `set NODE_OPTIONS=--openssl-legacy-provider && npm run build` or set the environment variable in your system settings
+- **macOS/Linux**: `npm run build` works as-is (the build script includes the required NODE_OPTIONS flag)
+- **Windows**: The inline NODE_OPTIONS in the build script won't work. Use:
+  ```cmd
+  set NODE_OPTIONS=--openssl-legacy-provider && npm run build
+  ```
+  Or install [cross-env](https://www.npmjs.com/package/cross-env) for cross-platform compatibility.
 
 For the start command on all platforms:
 ```bash
