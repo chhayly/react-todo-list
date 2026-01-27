@@ -27,16 +27,29 @@ Your app is ready to be deployed!
 
 ### Vercel Deployment
 
-This project currently uses Node.js 16.x for compatibility with `react-scripts@4.0.3`. 
+This project uses Node.js 24.x. Due to OpenSSL compatibility changes in Node.js 17+, `react-scripts@4.0.3` (webpack 4) requires the `NODE_OPTIONS=--openssl-legacy-provider` environment variable to build successfully.
 
-**⚠️ Note**: Node.js 16.x reached End of Life in September 2023. This is a temporary workaround to ensure builds work reliably. For long-term maintainability, consider upgrading to `react-scripts@5.x` which supports Node.js 18.x and 20.x (current LTS versions).
+#### Setting up Vercel Environment Variable
 
-If you encounter OpenSSL-related build errors on Vercel or other platforms using newer Node versions, you can set the following environment variable:
+To fix the `ERR_OSSL_EVP_UNSUPPORTED` error on Vercel:
 
+1. Go to your Vercel project settings
+2. Navigate to **Environment Variables**
+3. Add a new environment variable:
+   - **Name**: `NODE_OPTIONS`
+   - **Value**: `--openssl-legacy-provider`
+   - **Environment**: Select all (Production, Preview, Development)
+4. Redeploy your application
+
+#### Local Development
+
+For local development with Node.js 24.x, run:
+
+```bash
+NODE_OPTIONS=--openssl-legacy-provider npm start
+NODE_OPTIONS=--openssl-legacy-provider npm run build
 ```
-NODE_OPTIONS=--openssl-legacy-provider
-```
 
-**Note**: Vercel will automatically detect and use the correct Node version from `.nvmrc` and `package.json` engines field.
+**Note**: For long-term maintainability, consider upgrading to `react-scripts@5.x` which has full support for modern Node.js versions without requiring the legacy provider flag.
 
 
