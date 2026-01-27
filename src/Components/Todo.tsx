@@ -87,7 +87,13 @@ const Todo: React.FC<TodoProps> =
                                 className="row px-3 text-break todo-item"
                                 style={todo.isFailed ? disabled : {}}>
                                     <div className="col-1 my-2">
-                                    <Form.Check type="checkbox" checked={todo.isDone} onChange={onCheck} className="float-left todo-check" />
+                                    <Form.Check 
+                                        type="checkbox" 
+                                        checked={todo.isDone} 
+                                        onChange={onCheck} 
+                                        className="float-left todo-check"
+                                        aria-label={`Mark "${todo.todo}" as ${todo.isDone ? 'incomplete' : 'complete'}`}
+                                    />
                                     </div>
 
 
