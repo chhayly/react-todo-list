@@ -36,12 +36,14 @@ function App() {
 
   //Run on Startup
   useEffect(() => {
-    onValue(DbRTRef, (snapshot) => {
+    const unsubscribe = onValue(DbRTRef, (snapshot) => {
       setTodosChecksum(snapshot.val())
     }, {
       onlyOnce: false
     });
-  // eslint-disable-next-line
+
+    return () => unsubscribe();
+    // eslint-disable-next-line
   }, []);
   /*------------------------------------------------------------------------*/
   //Update Checksum
@@ -52,9 +54,11 @@ function App() {
 
   //Action
   async function addTodo(todo: string) {
-    if (isDuplicateTodo(todo)) return;
+    const trimmedTodo = todo.trim();
+    if (!trimmedTodo) return;
+    if (isDuplicateTodo(trimmedTodo)) return;
 
-    const _todo = mTodo.CreateTodo(todo);
+    const _todo = mTodo.CreateTodo(trimmedTodo);
 
     setTodos(t => t = [_todo, ...t]);
 
@@ -120,9 +124,10 @@ function App() {
   }
 
   function isDuplicateTodo(todo: string, id: string = "") {
-    if (todos.findIndex(t => t.todo.toUpperCase() === todo.toUpperCase() && t.getId !== id) > -1) {
+    const normalizedTodo = todo.trim().toUpperCase();
+    if (todos.findIndex(t => t.todo.toUpperCase() === normalizedTodo && t.getId !== id) > -1) {
 
-      return !window.confirm("Warning: Duplicated todo entered. Do you want to procceed?");
+      return !window.confirm("Warning: Duplicated todo entered. Do you want to proceed?");
     }
     return false;
   }
@@ -130,9 +135,9 @@ function App() {
 
   return (
     <>
-      <div className="container mx-auto px-auto" style={{ minWidth: "380px", maxWidth: "60%" }}>
+      <div className="container app-shell">
         <Header></Header>
-        <Table striped bordered hover variant="light" className="mt-4">
+        <Table bordered hover responsive variant="light" className="todo-table mt-4">
           <tbody>
 
             <TodoInput

@@ -6,10 +6,10 @@ const TodoList: React.FC<
     {
         todos: mTodo[],
         filterKeyword: string,
-        editBtnHandler: Function,
-        updateTodoHandler: Function,
-        abortEditTodoHandler: Function,
-        deleteBtnHandler: Function
+        editBtnHandler: (id: string) => void,
+        updateTodoHandler: (todo: mTodo) => void,
+        abortEditTodoHandler: () => void,
+        deleteBtnHandler: (id: string) => void
     }> =
     (
         {
@@ -21,10 +21,14 @@ const TodoList: React.FC<
             deleteBtnHandler
         }) => {
 
+        const normalizedFilterKeyword = filterKeyword.toUpperCase();
+        const filteredTodos = todos.filter(d => d.todo.toUpperCase().includes(normalizedFilterKeyword));
+
         return (<>
-            {todos.filter(d => d.todo.toUpperCase().indexOf(filterKeyword.toUpperCase()) > -1)
+            {filteredTodos
                 .map((t) => (
                     <Todo
+                        key={t.getId}
                         todo={t}
                         editBtnHandler={editBtnHandler}
                         updateTodoHandler={updateTodoHandler}
@@ -34,8 +38,10 @@ const TodoList: React.FC<
                 ))}
 
             <tr
-                className="text-center"
-                style={todos.filter(d => d.todo.toUpperCase().indexOf(filterKeyword.toUpperCase()) > -1).length === 0 ? { display: "" } : { display: "none" }} >No result. Create a new one instead!</tr>
+                className="text-center todo-empty"
+                style={filteredTodos.length === 0 ? { display: "" } : { display: "none" }}>
+                <td>No result. Create a new one instead!</td>
+            </tr>
         </>);
     }
 

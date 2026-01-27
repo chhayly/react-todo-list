@@ -1,76 +1,78 @@
 import React, { useState } from 'react'
 import { Form } from 'react-bootstrap';
 
-const TodoInput: React.FC<
-    {
-        addTodo: Function,
-        onFocus: Function,
-        filterKeyword: string,
-        filterInputOnChange: Function
-    }> = (
-        {
-            addTodo,
-            onFocus,
-            filterKeyword,
-            filterInputOnChange
-        }
-    ) => {
-        const [showInvalid, setShowInvalid] = useState(false);
+type TodoInputProps = {
+    addTodo: (todo: string) => void;
+    onFocus: () => void;
+    filterKeyword: string;
+    filterInputOnChange: (keyword: string) => void;
+};
 
-        const enterUpdateTodo = (e: any) => {
-            if (e.key === 'Enter') {
-                e.preventDefault()
-                if (e.target.value === "") {
-                    setShowInvalid(true);
-                    return;
-                }
-                setShowInvalid(false);
+const TodoInput: React.FC<TodoInputProps> = ({
+    addTodo,
+    onFocus,
+    filterKeyword,
+    filterInputOnChange
+}) => {
+    const [showInvalid, setShowInvalid] = useState(false);
 
-                addTodo(e.target.value)
-                //e.target.value = "";
-
-                filterInputOnChange("")
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter') {
+            e.preventDefault()
+            const value = e.currentTarget.value.trim();
+            if (value === "") {
+                setShowInvalid(true);
+                return;
             }
-        }
-        const AbortEdit = (e: any) => {
-            if (e.key === 'Escape') {
-                e.target.value = "";
-            }
-        }
+            setShowInvalid(false);
 
-        function onFocusTodoInput(e: any) {
-            onFocus();
+            addTodo(value)
+            filterInputOnChange("")
+            return;
         }
-
-
-        return (
-            <>
-                <tr>
-                    <td>
-                        <div className="row">
-                            <div className="col-12 h-auto">
-                                <Form.Control
-                                    required
-                                    as="textarea"
-                                    className="form-control-md h-75"
-                                    value={filterKeyword}
-                                    onKeyUp={AbortEdit}
-                                    onKeyPress={enterUpdateTodo}
-                                    onFocus={onFocusTodoInput}
-                                    onChange={(e) => { filterInputOnChange(e.target.value) }}
-                                    placeholder="Enter todo here..."
-                                ></Form.Control></div>
-                            <Form.Control.Feedback
-                                className="ml-3"
-                                type="invalid"
-                                style={showInvalid ? { display: "block" } : { display: "none" }}>
-                                This field cannot be blank.
-                            </Form.Control.Feedback>
-                        </div>
-                    </td>
-                </tr>
-            </>
-        );
+        if (e.key === 'Escape') {
+            setShowInvalid(false);
+            filterInputOnChange("");
+        }
     }
+
+    function onFocusTodoInput() {
+        onFocus();
+    }
+
+
+    return (
+        <>
+            <tr className="todo-input-row">
+                <td>
+                    <div className="row">
+                        <div className="col-12 h-auto">
+                            <Form.Control
+                                required
+                                as="textarea"
+                                rows={2}
+                                className="form-control-md h-75 todo-input"
+                                aria-label="Enter a new todo"
+                                value={filterKeyword}
+                                onKeyDown={handleKeyDown}
+                                onFocus={onFocusTodoInput}
+                                onChange={(e) => {
+                                    if (showInvalid) setShowInvalid(false);
+                                    filterInputOnChange(e.target.value);
+                                }}
+                                placeholder="Add a task and press Enter..."
+                            ></Form.Control></div>
+                        <Form.Control.Feedback
+                            className="ml-3 todo-invalid-feedback"
+                            type="invalid"
+                            style={showInvalid ? { display: "block" } : { display: "none" }}>
+                            This field cannot be blank.
+                        </Form.Control.Feedback>
+                    </div>
+                </td>
+            </tr>
+        </>
+    );
+}
 
 export default TodoInput;
