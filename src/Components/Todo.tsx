@@ -45,6 +45,19 @@ const Todo: React.FC<TodoProps> =
             setShowBtn(false);
         }
 
+        const handleFocus = () => {
+            if (todo.isFailed) return;
+            setShowBtn(true);
+        }
+
+        const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+            if (todo.isFailed) return;
+            // Only hide if focus is moving outside the todo item container
+            if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                setShowBtn(false);
+            }
+        }
+
         function btnDeleteOnClick() {
             deleteBtnHandler(todo.getId);
         }
@@ -82,7 +95,9 @@ const Todo: React.FC<TodoProps> =
                         <div
                             style={!todo.isEdit ? { display: "" } : { display: "none" }}
                             onMouseEnter={ShowBtn}
-                            onMouseLeave={HideBtn}>
+                            onMouseLeave={HideBtn}
+                            onFocus={handleFocus}
+                            onBlur={handleBlur}>
                             <div
                                 className="row px-3 text-break todo-item"
                                 style={todo.isFailed ? disabled : {}}>
