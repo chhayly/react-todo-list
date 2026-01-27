@@ -64,8 +64,6 @@ const TodoInput: React.FC<TodoInputProps> = ({
                             ></Form.Control></div>
                         <Form.Control.Feedback
                             className="ml-3 todo-invalid-feedback"
-                            className="ml-3"
->>>>>>> b26abb634dd58dcbdff110ba23f56e9e3476394d
                             type="invalid"
                             style={showInvalid ? { display: "block" } : { display: "none" }}>
                             This field cannot be blank.
