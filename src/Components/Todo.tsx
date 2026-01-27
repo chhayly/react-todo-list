@@ -53,7 +53,7 @@ const Todo: React.FC<TodoProps> =
         const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
             if (todo.isFailed) return;
             // Only hide if focus is moving outside the todo item container
-            if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+            if (!e.relatedTarget || !e.currentTarget.contains(e.relatedTarget as Node)) {
                 setShowBtn(false);
             }
         }
